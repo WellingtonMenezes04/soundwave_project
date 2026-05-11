@@ -3,6 +3,14 @@
 # 🎵 Soundwave
 ### Plataforma de Streaming de Música — Polyglot Persistence
 
+## 👨‍💻 Desenvolvedores
+
+### - Wellington Menezes Paim 
+### - Yuri Lucas Oishi 
+### 🎓 Centro Universitário FEI | Alunos do 5° semestre de Ciências da Computação - FEI| © 2026
+### 📧 tonmenezes21@gmail.com
+### 📧 yurilucasoishi@gmail.com
+
 ![License](https://img.shields.io/badge/license-MIT-purple)
 ![Docker](https://img.shields.io/badge/Docker-required-blue?logo=docker)
 ![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=node.js)
