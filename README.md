@@ -5,8 +5,8 @@
 
 ## 👨‍💻 Desenvolvedores
 
-### - Wellington Menezes Paim 
-### - Yuri Lucas Oishi 
+### - Wellington Menezes Paim | RA: 22225024-3
+### - Yuri Lucas Oishi | RA:22225025-0
 ### 🎓 Centro Universitário FEI | Alunos do 5° semestre de Ciências da Computação - FEI| © 2026
 ### 📧 tonmenezes21@gmail.com
 ### 📧 yurilucasoishi@gmail.com
