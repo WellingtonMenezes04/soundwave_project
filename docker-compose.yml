@@ -1,0 +1,124 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: soundwave_postgres
+    environment:
+      POSTGRES_USER: soundwave
+      POSTGRES_PASSWORD: soundwave123
+      POSTGRES_DB: soundwave_users
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - soundwave_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soundwave -d soundwave_users"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mongo:
+    image: mongo:7
+    container_name: soundwave_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: soundwave
+      MONGO_INITDB_ROOT_PASSWORD: soundwave123
+      MONGO_INITDB_DATABASE: soundwave_music
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/init.js
+    networks:
+      - soundwave_net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: soundwave_redis
+    command: redis-server --requirepass soundwave123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - soundwave_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "soundwave123", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  user-service:
+    build: ./backend/user-service
+    container_name: soundwave_user_service
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgres://soundwave:soundwave123@postgres:5432/soundwave_users
+    ports:
+      - "3001:3001"
+    networks:
+      - soundwave_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+
+  music-service:
+    build: ./backend/music-service
+    container_name: soundwave_music_service
+    environment:
+      PORT: 3002
+      MONGO_URL: mongodb://soundwave:soundwave123@mongo:27017/soundwave_music?authSource=admin
+    ports:
+      - "3002:3002"
+    networks:
+      - soundwave_net
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: on-failure
+
+  playback-service:
+    build: ./backend/playback-service
+    container_name: soundwave_playback_service
+    environment:
+      PORT: 3003
+      REDIS_URL: redis://:soundwave123@redis:6379
+    ports:
+      - "3003:3003"
+    networks:
+      - soundwave_net
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  frontend:
+    build: ./frontend
+    container_name: soundwave_frontend
+    ports:
+      - "8080:80"
+    networks:
+      - soundwave_net
+    depends_on:
+      - user-service
+      - music-service
+      - playback-service
+
+networks:
+  soundwave_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
