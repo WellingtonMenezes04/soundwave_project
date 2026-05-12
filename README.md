@@ -51,6 +51,19 @@ A plataforma permite cadastrar usuários, gerenciar um catálogo de álbuns com 
 
 ---
 
+## 📱 Screenshots do Projeto
+
+### Gerenciamento de Usuários
+![Usuários](./usuarios.jpeg)
+
+### Catálogo de Músicas
+![Catálogo](./catalogo.jpeg)
+
+### Playback e Histórico
+![Playback](./playback.jpeg)
+
+---
+
 ## 🏗️ Arquitetura
 
 ```
